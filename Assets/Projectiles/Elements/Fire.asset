@@ -1,0 +1,17 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 88e9e196a5edfb34bb05f2f8cf164ab8, type: 3}
+  m_Name: Fire
+  m_EditorClassIdentifier: 
+  baseProjectile: {fileID: 7209249817715967033, guid: 01c446e6a01b42a4da25316cf781386b, type: 3}
+  explosionParticles: {fileID: 1393314457954121184, guid: 1b741f8c75a36dd4ca7aa26c41df730f, type: 3}
+  standardVelocity: 10
