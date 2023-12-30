@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class GoToNode : ActionNode
 {
-
+    public float distance = 2f;
     protected override void OnStart()
     {
 

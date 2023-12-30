@@ -100,7 +100,7 @@ public class BehaviourTreeEditor : EditorWindow
             }
         }
         else{
-            if(tree && AssetDatabase.CanOpenAssetInEditor(tree.GetInstanceID())){
+            if(tree!= null && treeView != null && AssetDatabase.CanOpenAssetInEditor(tree.GetInstanceID())){
                 treeView.PopulateView(tree);
             }
         }

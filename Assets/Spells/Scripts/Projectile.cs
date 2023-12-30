@@ -9,7 +9,7 @@ public class Projectile : MonoBehaviour
     public GameObject explosion;
     public GameObject effect;
     public GameObject model;
-    public float g;
+    public float g = 9.81f;
     public CollisionBehaviour collBehaviour;
     public float scale = 1;
     private Vector3 _scaleVector;

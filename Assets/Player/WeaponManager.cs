@@ -18,20 +18,17 @@ public class WeaponManager : MonoBehaviour
     // Start is called before the first frame update
     Attack currentAttack;
     public ElementDefinition element;
-
+    InputAction fire;
     void Start()
     {
-        currentAttack = new DirectFire(element,new ExplosionCollisionBehaviour(element.explosionParticles));
+        currentAttack = new CurvedFire(element,new ExplosionCollisionBehaviour(element.explosionParticles));
 
-        InputAction fire = GetComponent<PlayerInput>().actions.FindAction("Player/Attack");
+        fire = GetComponent<PlayerInput>().actions.FindAction("Player/Attack");
 
         fire.started +=
             _ => OnStartAttack();
 
         fire.canceled +=
-            _ => OnEndAttack();
-
-        fire.performed +=
             _ => OnEndAttack();
 
     }
@@ -48,11 +45,9 @@ public class WeaponManager : MonoBehaviour
         currentAttack.OnEndAttack(aimTarget,projectileSource);
     }
 
-
-
     // Update is called once per frame
     void Update()
     {
-        
+        if(fire.enabled && fire.IsPressed()) OnDoAttack();
     }
 }

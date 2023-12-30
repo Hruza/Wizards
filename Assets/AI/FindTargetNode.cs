@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class FindTargetNode : ActionNode
 {
-
+    public bool inLOS = true;
     protected override void OnStart()
     {
 
@@ -17,6 +17,7 @@ public class FindTargetNode : ActionNode
 
     protected override State OnUpdate()
     {
+        
         GameObject target = GameObject.FindWithTag("Player");
         if(target != null){
             blackboard.moveToObject = target;
