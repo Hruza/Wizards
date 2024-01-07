@@ -15,12 +15,15 @@ MonoBehaviour:
   state: 0
   started: 0
   guid: b51ddcf8820ce924099347a2e7ff4cee
-  position: {x: 587.3145, y: 512.80005}
+  position: {x: 452.17532, y: 512.7999}
   blackboard:
     moveToPosition: {x: 0, y: 0, z: 0}
-    moveToObject: {fileID: 0}
   agent: {fileID: 0}
   description: 
+  distance: 2
+  timeAfterLastKnownPosition: 4
+  stopInReach: 1
+  demandVisibility: 1
 --- !u!114 &-3093533584868846307
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -36,10 +39,9 @@ MonoBehaviour:
   state: 0
   started: 0
   guid: 2c290f8612cc60840a2fc347236a5910
-  position: {x: 789.7049, y: 512.8}
+  position: {x: 662.3841, y: 512.7999}
   blackboard:
     moveToPosition: {x: 0, y: 0, z: 0}
-    moveToObject: {fileID: 0}
   agent: {fileID: 0}
   description: 
   duration: 0.5
@@ -61,7 +63,6 @@ MonoBehaviour:
   position: {x: 552, y: 18.992844}
   blackboard:
     moveToPosition: {x: 0, y: 0, z: 0}
-    moveToObject: {fileID: 0}
   agent: {fileID: 0}
   description: 
   child: {fileID: 6803458787474950782}
@@ -85,10 +86,8 @@ MonoBehaviour:
   - {fileID: -8228711180701359882}
   - {fileID: -3093533584868846307}
   - {fileID: 400017892664256561}
-  - {fileID: 863347103061097535}
   blackboard:
     moveToPosition: {x: 0, y: 0, z: 0}
-    moveToObject: {fileID: 0}
 --- !u!114 &400017892664256561
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -107,34 +106,11 @@ MonoBehaviour:
   position: {x: 559.19995, y: 258.4}
   blackboard:
     moveToPosition: {x: 0, y: 0, z: 0}
-    moveToObject: {fileID: 0}
   agent: {fileID: 0}
   description: 
   children:
-  - {fileID: 863347103061097535}
   - {fileID: -8228711180701359882}
   - {fileID: -3093533584868846307}
---- !u!114 &863347103061097535
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 514c3be8b6e8acd4799a8e81a944607c, type: 3}
-  m_Name: FindTargetNode
-  m_EditorClassIdentifier: 
-  state: 0
-  started: 0
-  guid: bdb9bf7779a171541affa853df9a73c6
-  position: {x: 383.5029, y: 512.8}
-  blackboard:
-    moveToPosition: {x: 0, y: 0, z: 0}
-    moveToObject: {fileID: 0}
-  agent: {fileID: 0}
-  description: 
 --- !u!114 &6803458787474950782
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -153,7 +129,6 @@ MonoBehaviour:
   position: {x: 552, y: 129.3992}
   blackboard:
     moveToPosition: {x: 0, y: 0, z: 0}
-    moveToObject: {fileID: 0}
   agent: {fileID: 0}
   description: 
   child: {fileID: 400017892664256561}

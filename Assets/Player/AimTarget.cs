@@ -14,8 +14,8 @@ public class AimTarget : MonoBehaviour
     {
         RaycastHit hit;
         // Does the ray intersect any objects excluding the player layer
-        Debug.DrawRay(cam.position, cam.TransformDirection(Vector3.forward) * 500, Color.yellow);
-        if (Physics.Raycast(cam.position, cam.TransformDirection(Vector3.forward), out hit, Mathf.Infinity, layerMask.GetHashCode()))
+        //Debug.DrawRay(cam.position, cam.TransformDirection(Vector3.forward) * 500, Color.yellow);
+        if (Physics.Raycast(cam.position, cam.TransformDirection(Vector3.forward), out hit, Mathf.Infinity, layerMask.value))
         {
             transform.position = hit.point;
         }

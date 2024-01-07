@@ -23,7 +23,7 @@ public class Entity : MonoBehaviour
     public float maxHealth = 100f;
     void Start()
     {
-        
+
     }
 
     // Update is called once per frame

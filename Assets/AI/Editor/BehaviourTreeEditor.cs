@@ -95,7 +95,7 @@ public class BehaviourTreeEditor : EditorWindow
         }
 
         if(Application.isPlaying){
-            if(tree){
+            if(tree != null && treeView != null){
                 treeView.PopulateView(tree);
             }
         }

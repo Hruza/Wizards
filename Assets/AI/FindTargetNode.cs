@@ -18,13 +18,14 @@ public class FindTargetNode : ActionNode
     protected override State OnUpdate()
     {
         
-        GameObject target = GameObject.FindWithTag("Player");
+        AggroData target = agent.currentTarget;
+        Debug.Log(target);
         if(target != null){
-            blackboard.moveToObject = target;
-            blackboard.moveToPosition = target.transform.position;
+            blackboard.target = target;
             return State.Success;
         }
         else{
+            blackboard.target = null;
             return State.Failure;
         }
     }
