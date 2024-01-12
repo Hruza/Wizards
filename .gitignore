@@ -75,6 +75,6 @@ crashlytics-build.properties
 /[Aa]ssets/[Ss]treamingAssets/aa/*
 
 # Paid Asset
-/Assets/Smooth Sync/
+/Assets/Scripts/Smooth Sync/
 
 /Assets/TextMesh Pro/
