@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [System.Flags]
+[System.Serializable]
 public enum EntityType{
     inanimate = 0,
     player = 1,

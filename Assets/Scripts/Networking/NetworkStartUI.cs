@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 public class NetworkStartUI : MonoBehaviour
 {
@@ -16,8 +17,11 @@ public class NetworkStartUI : MonoBehaviour
 
     void StartHost(){
         Debug.Log("Starting host");
-        NetworkManager.Singleton.StartHost();
-        HideUI();
+        bool started = NetworkManager.Singleton.StartHost();
+        if(started){
+            NetworkManager.Singleton.SceneManager.LoadScene("Level",LoadSceneMode.Additive);
+            HideUI();
+        }
     }
 
     void StartClient(){

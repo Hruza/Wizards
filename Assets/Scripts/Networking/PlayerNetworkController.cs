@@ -14,7 +14,6 @@ public class PlayerNetworkController : NetworkBehaviour {
             GetComponent<ThirdPersonController>().enabled = false;
             GetComponent<WeaponManager>().enabled = false;
             GetComponent<PlayerInput>().enabled = false;
-            GetComponent<StarterAssetInputs>().enabled = false;
             return;
         }
 

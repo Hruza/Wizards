@@ -102,29 +102,14 @@ public class ThirdPersonController : MonoBehaviour
     private int _animIDFreeFall;
     private int _animIDMotionSpeed;
 
-#if ENABLE_INPUT_SYSTEM 
-    private PlayerInput _playerInput;
-#endif
     private Animator _animator;
     private CharacterController _controller;
-    private StarterAssetsInputs _input;
+    private InputParser _input;
     [SerializeField]private GameObject playerCamera;
 
     private const float _threshold = 0.01f;
 
     private bool _hasAnimator;
-
-    private bool IsCurrentDeviceMouse
-    {
-        get
-        {
-#if ENABLE_INPUT_SYSTEM
-            return _playerInput.currentControlScheme == "KeyboardMouse";
-#else
-            return false;
-#endif
-        }
-    }
 
 
     private void Awake()
@@ -134,6 +119,7 @@ public class ThirdPersonController : MonoBehaviour
         {
             playerCamera = GameObject.FindGameObjectWithTag("MainCamera");
         }
+        _input = GetComponent<InputParser>();
     }
 
     private void Start()
@@ -142,12 +128,6 @@ public class ThirdPersonController : MonoBehaviour
         
         _hasAnimator = TryGetComponent(out _animator);
         _controller = GetComponent<CharacterController>();
-        _input = GetComponent<StarterAssetsInputs>();
-#if ENABLE_INPUT_SYSTEM 
-        _playerInput = GetComponent<PlayerInput>();
-#else
-        Debug.LogError( "Starter Assets package is missing dependencies. Please use Tools/Starter Assets/Reinstall Dependencies to fix it");
-#endif
 
         AssignAnimationIDs();
 
@@ -201,7 +181,7 @@ public class ThirdPersonController : MonoBehaviour
         if (_input.look.sqrMagnitude >= _threshold && !LockCameraPosition)
         {
             //Don't multiply mouse input by Time.deltaTime;
-            float deltaTimeMultiplier = IsCurrentDeviceMouse ? 1.0f : Time.deltaTime;
+            float deltaTimeMultiplier = _input.IsCurrentDeviceMouse ? 1.0f : Time.deltaTime;
 
             _cinemachineTargetYaw += _input.look.x * deltaTimeMultiplier;
             _cinemachineTargetPitch += _input.look.y * deltaTimeMultiplier;

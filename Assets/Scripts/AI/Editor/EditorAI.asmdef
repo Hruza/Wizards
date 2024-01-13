@@ -2,7 +2,7 @@
     "name": "EditorAI",
     "rootNamespace": "",
     "references": [
-        "GUID:f1043ae18e0d3e14eb723f1e9a57c788"
+        "GUID:b193f211044c8df41be6db5f4d2dbfde"
     ],
     "includePlatforms": [
         "Editor"

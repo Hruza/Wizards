@@ -4,7 +4,7 @@ using UnityEngine.InputSystem;
 #endif
 
 
-public class StarterAssetsInputs : MonoBehaviour
+public class InputParser : MonoBehaviour
 {
 	[Header("Character Input Values")]
 	public Vector2 move;
@@ -19,30 +19,45 @@ public class StarterAssetsInputs : MonoBehaviour
 	public bool cursorLocked = true;
 	public bool cursorInputForLook = true;
 
-#if ENABLE_INPUT_SYSTEM
-	public void OnMove(InputValue value)
+	PlayerInput _playerInput;
+
+	public bool IsCurrentDeviceMouse
+    {
+        get
+        {
+            return _playerInput.currentControlScheme == "KeyboardMouse";
+        }
+    }
+
+
+	private void Awake() {
+		
+		_playerInput = GetComponent<PlayerInput>();
+		Cursor.lockState = CursorLockMode.Locked;
+
+	}
+	public void OnMove(InputAction.CallbackContext value)
 	{
-		MoveInput(value.Get<Vector2>());
+		MoveInput(value.ReadValue<Vector2>());
 	}
 
-	public void OnLook(InputValue value)
+	public void OnLook(InputAction.CallbackContext  value)
 	{
 		if(cursorInputForLook)
 		{
-			LookInput(value.Get<Vector2>());
+			LookInput(value.ReadValue<Vector2>());
 		}
 	}
 
-	public void OnJump(InputValue value)
+	public void OnJump(InputAction.CallbackContext  value)
 	{
-		JumpInput(value.isPressed);
+		JumpInput(value.performed);
 	}
 
-	public void OnSprint(InputValue value)
+	public void OnSprint(InputAction.CallbackContext value)
 	{
-		SprintInput(value.isPressed);
+		SprintInput(value.phase.IsInProgress());
 	}
-#endif
 
 
 	public void MoveInput(Vector2 newMoveDirection)
@@ -67,7 +82,6 @@ public class StarterAssetsInputs : MonoBehaviour
 
 	private void OnApplicationFocus(bool hasFocus)
 	{
-		Debug.Log("now");
 		SetCursorState(cursorLocked);
 	}
 

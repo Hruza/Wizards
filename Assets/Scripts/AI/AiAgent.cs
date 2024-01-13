@@ -20,7 +20,7 @@ public enum OffMeshLinkMoveMethod {
    Curve
 }
 [RequireComponent (typeof (NavMeshAgent))]
-public class AiAgent : MonoBehaviour
+public class AiAgent : MonoBehaviour 
 {
 
     const float AGGRO_CALC_PERIOD = 0.25f;
@@ -33,25 +33,10 @@ public class AiAgent : MonoBehaviour
     public AnimationCurve curve = new AnimationCurve ();
 
     [Header("Aggro")]
-    public Transform eyes;
-    public float attackThreshold = 100f;
-    public float deaggroThreshold = 50f;
-    public float targetSwitchThreshold = 20f;
-    public float LOSIncrement = 5f;
-    public float detectionRadius = 30f;
-    public float visionRadius = 70f;
-    public float detectionAngle = 180f;
-    public float proximityIncrement = 10f;
-    public float proximityRadius = 3f;
-    public float attackIncrement = 150f;
-    public float aggroDecay = 2f;
-    public float aggroCap = 200f;
-    public float attackAggroCap = 300f;
-    public LayerMask aggroLayerMask;
-    public LayerMask obstacleLayerMask;
 
+    public Transform eyes;
+    public TargetDetectionSettings aggroSettings;
     private float detectionCos;
-    public EntityType attackedTypes;
 
     private List<AggroData> aggroData;
 
@@ -68,7 +53,7 @@ public class AiAgent : MonoBehaviour
     }
 
     IEnumerator Start () {
-        detectionCos = Mathf.Cos(detectionAngle/2 * Mathf.Deg2Rad);
+        detectionCos = Mathf.Cos(aggroSettings.detectionAngle/2 * Mathf.Deg2Rad);
 
         aggroData = new List<AggroData>();
 
@@ -102,8 +87,8 @@ public class AiAgent : MonoBehaviour
 
     private void OnDrawGizmos() {
         Gizmos.color = Color.yellow;
-        if(eyes) Gizmos.DrawWireSphere(eyes.position,detectionRadius);
-        else Gizmos.DrawWireSphere(transform.position,detectionRadius);
+        if(eyes) Gizmos.DrawWireSphere(eyes.position,aggroSettings.detectionRadius);
+        else Gizmos.DrawWireSphere(transform.position,aggroSettings.detectionRadius);
     }
 
     public void GoToTarget(Vector3 target){
@@ -136,7 +121,7 @@ public class AiAgent : MonoBehaviour
     void UpdateAggro(Entity entity,float valueIncrement,bool updatePosition, bool isAttack=false){
         AggroData result = aggroData.Find(x => x.entity == entity);
         if(result != null){
-            result.aggro += Mathf.Max(Mathf.Min(result.aggro + valueIncrement,isAttack?attackAggroCap:aggroCap) - result.aggro, 0);
+            result.aggro += Mathf.Max(Mathf.Min(result.aggro + valueIncrement,isAttack?aggroSettings.attackAggroCap:aggroSettings.aggroCap) - result.aggro, 0);
             result.lastKnownPosition = entity.transform.position;
             result.lastPositionUpdate = Time.time;
         }
@@ -160,7 +145,7 @@ public class AiAgent : MonoBehaviour
             return null;
         }
         AggroData maxAggro =  aggroData.Find(x => x.aggro == aggroData.Max(y => y.aggro));
-        if(maxAggro.aggro > attackThreshold) return maxAggro;
+        if(maxAggro.aggro > aggroSettings.attackThreshold) return maxAggro;
         else return null;
     }
 
@@ -168,7 +153,7 @@ public class AiAgent : MonoBehaviour
         Vector3 direction = entity.gameObject.transform.position - eyes.position;
         float distance = direction.magnitude;
         RaycastHit hit; 
-        LayerMask raycastMask = obstacleLayerMask | (1 << entity.gameObject.layer);
+        LayerMask raycastMask = aggroSettings.obstacleLayerMask | (1 << entity.gameObject.layer);
 
         bool isVisible = false;
 
@@ -199,12 +184,12 @@ public class AiAgent : MonoBehaviour
 
         while(true){
             currentProcessed = false;
-            foreach(Collider coll in Physics.OverlapSphere(eyes.position,detectionRadius,aggroLayerMask.value)){
+            foreach(Collider coll in Physics.OverlapSphere(eyes.position,aggroSettings.detectionRadius,aggroSettings.aggroLayerMask.value)){
                 Entity entity = coll.GetComponent<Entity>();
 
                 if(entity == null) continue;
                 
-                if(!attackedTypes.HasFlag(entity.entityType)) continue; 
+                if(!aggroSettings.attackedTypes.HasFlag(entity.entityType)) continue; 
 
                 GameObject go = coll.gameObject;
 
@@ -219,8 +204,8 @@ public class AiAgent : MonoBehaviour
                 distance = direction.magnitude;
 
                 //add proximity aggro
-                if(distance < proximityRadius){
-                    aggroChange += proximityIncrement;
+                if(distance < aggroSettings.proximityRadius){
+                    aggroChange += aggroSettings.proximityIncrement;
                     Debug.DrawRay(eyes.position,direction+Vector3.up,Color.green,AGGRO_CALC_PERIOD); 
                 }
 
@@ -228,10 +213,10 @@ public class AiAgent : MonoBehaviour
                             
                 //check obstacles
                 //add look aggro
-                if(distance < detectionRadius){
-                    isVisible = CheckVisibility(entity,detectionRadius);
+                if(distance < aggroSettings.detectionRadius){
+                    isVisible = CheckVisibility(entity,aggroSettings.detectionRadius);
                     if(isVisible){
-                        aggroChange += LOSIncrement * Mathf.Lerp(0.5f ,1f ,distance/detectionRadius);
+                        aggroChange += aggroSettings.LOSIncrement * Mathf.Lerp(0.5f ,1f ,distance/aggroSettings.detectionRadius);
                         
                         Debug.DrawRay(eyes.position,direction,Color.yellow,AGGRO_CALC_PERIOD);
                     }
@@ -245,11 +230,11 @@ public class AiAgent : MonoBehaviour
                 }
             }
 
-            if(!currentProcessed && currentTarget != null && CheckVisibility(currentTarget.entity, visionRadius)) {
+            if(!currentProcessed && currentTarget != null && CheckVisibility(currentTarget.entity, aggroSettings.visionRadius)) {
                 UpdateAggro(currentTarget.entity,0,true);
             }
 
-            UpdateAllAggro(-aggroDecay);
+            UpdateAllAggro(-aggroSettings.aggroDecay);
 
             UpdateCurrentTarget();
 
@@ -262,6 +247,7 @@ public class AiAgent : MonoBehaviour
         style.normal.textColor = Color.gray;
         for (int i = 0; i < aggroData.Count; i++)
         {
+            if(aggroData[i] == null || aggroData[i].entity == null || aggroData[i].entity.gameObject == null) continue;
             GUI.Label(new Rect(10, 10*i, 100, 20), aggroData[i].entity.gameObject.name + ": " +aggroData[i].aggro.ToString(),new GUIStyle());
         }
     }
@@ -269,14 +255,14 @@ public class AiAgent : MonoBehaviour
         
         AggroData maxAggroEnemy = GetMaxAggroEnemy();
         if(currentTarget == null || currentTarget.entity == null || currentTarget.aggro <= 0){
-            if(maxAggroEnemy != null && maxAggroEnemy.aggro > attackThreshold){
+            if(maxAggroEnemy != null && maxAggroEnemy.aggro > aggroSettings.attackThreshold){
                 currentTarget = maxAggroEnemy;
             }
             else{
                 currentTarget = null;
             }
         }
-        else if(maxAggroEnemy != null && maxAggroEnemy.aggro - currentTarget.aggro > targetSwitchThreshold){
+        else if(maxAggroEnemy != null && maxAggroEnemy.aggro - currentTarget.aggro > aggroSettings.targetSwitchThreshold){
             currentTarget = maxAggroEnemy;
         }
     }
@@ -291,6 +277,10 @@ public class AiAgent : MonoBehaviour
 
     void OnLand(){
         
+    }
+
+    private void OnDisable() {
+        nav.enabled = false;
     }
 
     IEnumerator NormalSpeed (NavMeshAgent agent) {
@@ -327,4 +317,26 @@ public class AiAgent : MonoBehaviour
     }
 }
 
- 
+[Serializable]
+public class TargetDetectionSettings{
+    public float attackThreshold = 100f;
+    public float deaggroThreshold = 50f;
+    public float targetSwitchThreshold = 20f;
+    public float LOSIncrement = 5f;
+    public float detectionRadius = 30f;
+    public float visionRadius = 70f;
+    public float detectionAngle = 180f;
+    public float proximityIncrement = 10f;
+    public float proximityRadius = 3f;
+    public float attackIncrement = 150f;
+    public float aggroDecay = 2f;
+    public float aggroCap = 200f;
+    public float attackAggroCap = 300f;
+    [Tooltip("Layers to check for possible targets.")]
+    public LayerMask aggroLayerMask;
+    [Tooltip("Layers to break line of sight.")]
+    public LayerMask obstacleLayerMask;
+    [Tooltip("Type of entities that can be targeted.")]
+    public EntityType attackedTypes;
+
+}
