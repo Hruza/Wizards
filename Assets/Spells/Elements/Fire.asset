@@ -12,6 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 88e9e196a5edfb34bb05f2f8cf164ab8, type: 3}
   m_Name: Fire
   m_EditorClassIdentifier: 
-  baseProjectile: {fileID: 7209249817715967033, guid: 01c446e6a01b42a4da25316cf781386b, type: 3}
+  baseProjectile: {fileID: 11400000, guid: 07159a681bcd9854f916cc0048923b7c, type: 2}
   explosionParticles: {fileID: 1393314457954121184, guid: 1b741f8c75a36dd4ca7aa26c41df730f, type: 3}
-  standardVelocity: 50
+  standardVelocity: 30

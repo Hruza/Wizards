@@ -2,16 +2,22 @@
     "name": "AI",
     "rootNamespace": "",
     "references": [
-        "GUID:da9ac266c637cd84f9ecb995e2f1b2d6",
-        "GUID:1491147abca9d7d4bb7105af628b223e"
+        "UnityEngine.TestRunner",
+        "UnityEditor.TestRunner",
+        "Entity",
+        "Unity.Netcode.Runtime"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],
     "allowUnsafeCode": false,
-    "overrideReferences": false,
-    "precompiledReferences": [],
+    "overrideReferences": true,
+    "precompiledReferences": [
+        "nunit.framework.dll"
+    ],
     "autoReferenced": true,
-    "defineConstraints": [],
+    "defineConstraints": [
+        "UNITY_INCLUDE_TESTS"
+    ],
     "versionDefines": [],
     "noEngineReferences": false
 }

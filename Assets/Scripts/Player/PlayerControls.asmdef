@@ -1,11 +1,10 @@
 {
-    "name": "BehaviourTree",
+    "name": "PlayerControls",
     "rootNamespace": "",
     "references": [
         "UnityEngine.TestRunner",
         "UnityEditor.TestRunner",
-        "AI",
-        "Entity"
+        "Unity.InputSystem"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

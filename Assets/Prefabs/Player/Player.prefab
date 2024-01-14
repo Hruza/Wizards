@@ -669,13 +669,13 @@ MonoBehaviour:
   m_RequiresOpaqueTextureOption: 2
   m_CameraType: 0
   m_Cameras: []
-  m_RendererIndex: -1
+  m_RendererIndex: 0
   m_VolumeLayerMask:
     serializedVersion: 2
     m_Bits: 1
   m_VolumeTrigger: {fileID: 0}
   m_VolumeFrameworkUpdateModeOption: 2
-  m_RenderPostProcessing: 0
+  m_RenderPostProcessing: 1
   m_Antialiasing: 0
   m_AntialiasingQuality: 2
   m_StopNaN: 0
@@ -1529,9 +1529,9 @@ GameObject:
   - component: {fileID: 6987624046729686486}
   - component: {fileID: 2963898080200196389}
   - component: {fileID: 1450775732527455704}
+  - component: {fileID: 6259332119379222881}
   - component: {fileID: 5395481850924086541}
   - component: {fileID: 7924509820658681576}
-  - component: {fileID: 6259332119379222881}
   - component: {fileID: 6747539046764781159}
   - component: {fileID: 621130079744823438}
   - component: {fileID: 1937664387508949198}
@@ -1893,39 +1893,6 @@ MonoBehaviour:
   - m_Rig: {fileID: 509973472675760898}
     m_Active: 1
   m_Effectors: []
---- !u!114 &5395481850924086541
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3870262692723458003}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7fb84bddb279fa14fb0cb214890387ed, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  aimTarget: {fileID: 1642124185006938676}
-  projectile: {fileID: 6050052355920459466, guid: c5966956ccf91a7408bf2c5310aed9cd, type: 3}
-  projectileSource: {fileID: 9127177598029266399}
-  projectileVelocity: 30
-  g: 9.81
-  maxDist: 50
-  element: {fileID: 11400000, guid: a6a37c60ce1cba4458cb3cc7696a25d3, type: 2}
---- !u!114 &7924509820658681576
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3870262692723458003}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f29a9bca89962af46b2a03f15a7db63c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  entityType: 1
-  maxHealth: 100
 --- !u!114 &6259332119379222881
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1946,6 +1913,43 @@ MonoBehaviour:
   SpawnWithObservers: 1
   DontDestroyWithOwner: 0
   AutoObjectParentSync: 1
+--- !u!114 &5395481850924086541
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3870262692723458003}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7fb84bddb279fa14fb0cb214890387ed, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  aimTarget: {fileID: 1642124185006938676}
+  projectile: {fileID: 6050052355920459466, guid: c5966956ccf91a7408bf2c5310aed9cd, type: 3}
+  projectileSource: {fileID: 9127177598029266399}
+  projectileVelocity: 30
+  g: 9.81
+  maxDist: 50
+  defaultAttack: {fileID: 11400000, guid: 66d61c988cc63c24eb69cb8390d687b8, type: 2}
+  defaultModifier: {fileID: 11400000, guid: 3b227ad30e6860c46b47268ac9d0541d, type: 2}
+  element: {fileID: 11400000, guid: 80ab32d8575b88f40a6efe5ce444a652, type: 2}
+  networkProjectiles: {fileID: 11400000, guid: bce9cbe3f3dbb374abdd36fa30d9f0a8, type: 2}
+  networkEffects: {fileID: 0}
+--- !u!114 &7924509820658681576
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3870262692723458003}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f29a9bca89962af46b2a03f15a7db63c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  entityType: 1
+  maxHealth: 100
 --- !u!114 &6747539046764781159
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1961,9 +1965,9 @@ MonoBehaviour:
   interpolationBackTime: 0.1
   extrapolationMode: 1
   useExtrapolationTimeLimit: 1
-  extrapolationTimeLimit: 5
-  useExtrapolationDistanceLimit: 0
-  extrapolationDistanceLimit: 20
+  extrapolationTimeLimit: 0.5
+  useExtrapolationDistanceLimit: 1
+  extrapolationDistanceLimit: 5
   sendPositionThreshold: 0
   sendRotationThreshold: 0
   sendScaleThreshold: 0
@@ -1980,10 +1984,10 @@ MonoBehaviour:
   timeCorrectionSpeed: 0.1
   snapTimeThreshold: 3
   syncPosition: 0
-  syncRotation: 1
+  syncRotation: 5
   syncScale: 7
   syncVelocity: 0
-  syncAngularVelocity: 0
+  syncAngularVelocity: 5
   isPositionCompressed: 0
   isRotationCompressed: 0
   isScaleCompressed: 0

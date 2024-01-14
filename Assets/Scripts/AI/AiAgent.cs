@@ -52,15 +52,17 @@ public class AiAgent : MonoBehaviour
         }
     }
 
+    public void Awake(){
+        nav = GetComponent<NavMeshAgent>();
+        anim = GetComponent<Animator>();
+    }
+
     IEnumerator Start () {
         detectionCos = Mathf.Cos(aggroSettings.detectionAngle/2 * Mathf.Deg2Rad);
 
         aggroData = new List<AggroData>();
 
         if(eyes == null) eyes = transform;
-
-        nav = GetComponent<NavMeshAgent>();
-        anim = GetComponent<Animator>();
         nav.autoTraverseOffMeshLink = false;
 
         StartCoroutine(EvaluateAggro());

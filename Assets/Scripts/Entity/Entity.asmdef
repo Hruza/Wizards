@@ -1,5 +1,5 @@
 {
-    "name": "Entity_Common",
+    "name": "Entity",
     "rootNamespace": "",
     "references": [
         "UnityEngine.TestRunner",
@@ -8,11 +8,11 @@
     "includePlatforms": [],
     "excludePlatforms": [],
     "allowUnsafeCode": false,
-    "overrideReferences": true,
+    "overrideReferences": false,
     "precompiledReferences": [
         "nunit.framework.dll"
     ],
-    "autoReferenced": false,
+    "autoReferenced": true,
     "defineConstraints": [
         "UNITY_INCLUDE_TESTS"
     ],

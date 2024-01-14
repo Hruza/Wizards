@@ -1,10 +1,9 @@
 {
-    "name": "BehaviourTree",
+    "name": "Entity_main",
     "rootNamespace": "",
     "references": [
         "UnityEngine.TestRunner",
         "UnityEditor.TestRunner",
-        "AI",
         "Entity"
     ],
     "includePlatforms": [],

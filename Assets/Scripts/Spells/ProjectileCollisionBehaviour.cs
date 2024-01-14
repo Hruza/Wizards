@@ -1,40 +1,30 @@
 using UnityEngine;
+using Unity.Netcode;
+using System;
 
 
 public abstract class CollisionBehaviour
 {
     public ElementDefinition element;
-    public abstract void PerformCollision(GameObject projectile,GameObject model,GameObject effect, Collision other, Rigidbody rb);
+    public abstract void PerformCollision(GameObject projectileObject,Projectile projComponent, Collision other, Rigidbody rb);
 }
 
 
 public class ExplosionCollisionBehaviour:CollisionBehaviour
 {
-    const float DELETE_TIME = 10f; 
-    GameObject _explosionParticles;
+    const float DELETE_TIME = 4f; 
 
+    public override void PerformCollision(GameObject projectileObject,Projectile projComponent, Collision other, Rigidbody rb){
 
-    public ExplosionCollisionBehaviour(GameObject explosionParticles){
-        _explosionParticles = explosionParticles;
-    }
-
-    public override void PerformCollision(GameObject projectileObject,GameObject model,GameObject effect, Collision other, Rigidbody rb){
-        if(_explosionParticles){
-            GameObject explosionInstance = GameObject.Instantiate(_explosionParticles,projectileObject.transform.position,projectileObject.transform.rotation);
-            GameObject.Destroy(explosionInstance,DELETE_TIME);
-        }
-
-        foreach(ParticleSystem particleSystem in projectileObject.GetComponentsInChildren<ParticleSystem>()){
-            particleSystem.Stop();
-        }
+        projComponent.HideProjectileClientRPC();
         
-        model.SetActive(false);
+        projComponent.ExplosionEffectClientRPC(projectileObject.transform.position, Quaternion.identity);
         
         foreach(Collider col in projectileObject.GetComponents<Collider>()){
             col.enabled = false;
         }
         rb.collisionDetectionMode = CollisionDetectionMode.Discrete;
         rb.isKinematic = true; 
-        GameObject.Destroy(projectileObject,DELETE_TIME);
+        projComponent.DespawnObject(DELETE_TIME);
     }
 }

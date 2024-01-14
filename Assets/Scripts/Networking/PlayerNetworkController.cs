@@ -12,7 +12,6 @@ public class PlayerNetworkController : NetworkBehaviour {
             audioListener.enabled =false;
             playerCamera.Priority = 0;
             GetComponent<ThirdPersonController>().enabled = false;
-            GetComponent<WeaponManager>().enabled = false;
             GetComponent<PlayerInput>().enabled = false;
             return;
         }
