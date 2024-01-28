@@ -2,10 +2,7 @@
     "name": "AI",
     "rootNamespace": "",
     "references": [
-        "UnityEngine.TestRunner",
-        "UnityEditor.TestRunner",
-        "Entity",
-        "Unity.Netcode.Runtime"
+        "Entity"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],
@@ -14,10 +11,8 @@
     "precompiledReferences": [
         "nunit.framework.dll"
     ],
-    "autoReferenced": true,
-    "defineConstraints": [
-        "UNITY_INCLUDE_TESTS"
-    ],
+    "autoReferenced": false,
+    "defineConstraints": [],
     "versionDefines": [],
     "noEngineReferences": false
 }

@@ -1,7 +1,9 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+#if UNITY_EDITOR
 using UnityEditor;
+#endif
 using UnityEngine;
 
 [CreateAssetMenu(fileName = "BehaviourTree", menuName = "BehaviourTree", order = 0)]
@@ -18,7 +20,6 @@ public class BehaviourTree : ScriptableObject
         }
         return treeState;    
     }
-
 #if UNITY_EDITOR
     public Node CreateNode(System.Type type){
         Node node = ScriptableObject.CreateInstance(type) as Node;
@@ -92,7 +93,6 @@ public class BehaviourTree : ScriptableObject
         }
     }
 #endif
-
     public List<Node> GetChildren(Node parent){
         List<Node> children = new List<Node>();
 

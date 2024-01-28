@@ -5,20 +5,7 @@ using System.Linq;
 using UnityEngine;
 using UnityEngine.AI;
 
- 
-public class AggroData{
-    public Entity entity;
-    public float aggro;
-    public Vector3 lastKnownPosition;
-    public float lastPositionUpdate;
-}
 
-public enum OffMeshLinkMoveMethod {
-   Teleport,
-   NormalSpeed,
-   Parabola,
-   Curve
-}
 [RequireComponent (typeof (NavMeshAgent))]
 public class AiAgent : MonoBehaviour 
 {
@@ -341,4 +328,18 @@ public class TargetDetectionSettings{
     [Tooltip("Type of entities that can be targeted.")]
     public EntityType attackedTypes;
 
+}
+
+public class AggroData{
+    public Entity entity;
+    public float aggro;
+    public Vector3 lastKnownPosition;
+    public float lastPositionUpdate;
+}
+
+public enum OffMeshLinkMoveMethod {
+   Teleport,
+   NormalSpeed,
+   Parabola,
+   Curve
 }
