@@ -1934,7 +1934,7 @@ MonoBehaviour:
   defaultAttack: {fileID: 11400000, guid: 66d61c988cc63c24eb69cb8390d687b8, type: 2}
   defaultModifier: {fileID: 11400000, guid: 3b227ad30e6860c46b47268ac9d0541d, type: 2}
   element: {fileID: 11400000, guid: 80ab32d8575b88f40a6efe5ce444a652, type: 2}
-  networkProjectiles: {fileID: 11400000, guid: bce9cbe3f3dbb374abdd36fa30d9f0a8, type: 2}
+  networkProjectiles: {fileID: 11400000, guid: 5be07bc2d725d5848bf518c3de9d19d5, type: 2}
   networkEffects: {fileID: 0}
 --- !u!114 &7924509820658681576
 MonoBehaviour:

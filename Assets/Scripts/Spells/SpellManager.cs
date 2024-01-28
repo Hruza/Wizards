@@ -24,13 +24,13 @@ public class SpellManager : NetworkBehaviour
     
     public ElementDefinition element;
     InputAction fire;
-    [SerializeField]NetworkPrefabsList networkProjectiles;
+    [SerializeField]PrefabList networkProjectiles;
     [SerializeField]NetworkPrefabsList networkEffects;
     PrefabIndexer projectileIndexer;
 
     public override void OnNetworkSpawn()
     {
-        projectileIndexer = new PrefabIndexer(networkProjectiles);
+        projectileIndexer = new PrefabIndexer(networkProjectiles.prefabs);
         if(!IsOwner) return;
         Debug.Log(defaultModifier);
         currentSpell = new Spell(element,defaultAttack,defaultModifier,this);
@@ -64,42 +64,54 @@ public class SpellManager : NetworkBehaviour
         if(fire.enabled && fire.IsPressed()) OnDoAttack();
     }
 
+    int prefabId=0;
+
     public void CreateProjectile(GameObject projectile,Vector3 pos, Vector3 velocity,float scale, float g){
-        SpawnProjectileServerRPC(projectileIndexer.PrefabToId(projectile), pos, velocity,scale,g);
+        prefabId = projectileIndexer.PrefabToId(projectile);
+        SpawnProjectileServerRPC(prefabId, NetworkTickClock.instance.currentTick, pos, velocity,scale,g);
+        InstantiateProjectile(prefabId, -1, pos, velocity, scale, g);
     }
 
 
     [ServerRpc]
-    public void SpawnProjectileServerRPC(int prefabId, Vector3 position, Vector3 velocity,float scale, float g){
+    public void SpawnProjectileServerRPC(int prefabId, int tick, Vector3 position, Vector3 velocity,float scale, float g){
+        InsantiateProjectileClientRPC(prefabId, tick, position, velocity, scale, g);   
+    }
+
+    [ClientRpc]
+    public void InsantiateProjectileClientRPC(int prefabId, int tick, Vector3 position, Vector3 velocity,float scale, float g){
+        if(!IsOwner){
+            InstantiateProjectile(prefabId,tick,position,velocity,scale,g);
+        }
+    }
+
+    public void InstantiateProjectile(int prefabId, int tick, Vector3 position, Vector3 velocity,float scale, float g){
         Debug.Log("Creating prefab velocity "+velocity.ToString());
         Quaternion rotation = Quaternion.LookRotation(velocity,Vector3.up);
 
-        NetworkObject proj = NetworkObjectPool.Singleton.GetNetworkObject(projectileIndexer.IdToPrefab(prefabId),position,rotation);
+        GameObject proj = Instantiate(projectileIndexer.IdToPrefab(prefabId),position,rotation);
 
-        Projectile projComponent = proj.GetComponent<Projectile>();
-        if(projComponent){
-            projComponent.collBehaviour = new ExplosionCollisionBehaviour();
-            projComponent.scale = scale;
-            projComponent.g = g;
-            projComponent.initSpeed = velocity.magnitude;
-            projComponent.Initialize();
+        IProjectile projComponent = proj.GetComponent<IProjectile>();
+        if(projComponent != null){
+            projComponent.Initialize(new ExplosionCollisionBehaviour(),scale,g,velocity.magnitude);
         }
-        proj.Spawn();
+        if(tick >=0){
+            NetworkTickClock.instance.RollForward(projComponent,tick);
+        }
     }
-
 }
 
 public class PrefabIndexer{
     Dictionary<int,GameObject> _idToPrefab;
     Dictionary<GameObject,int> _prefabToId;
 
-    public PrefabIndexer(NetworkPrefabsList prefabList){
+    public PrefabIndexer(List<GameObject> prefabList){
         _idToPrefab = new Dictionary<int, GameObject>();
         _prefabToId = new Dictionary<GameObject, int>();
-        for (int i = 0; i < prefabList.PrefabList.Count; i++)
+        for (int i = 0; i < prefabList.Count; i++)
         {
-            _idToPrefab[i] = prefabList.PrefabList[i].Prefab; 
-            _prefabToId[prefabList.PrefabList[i].Prefab] = i;
+            _idToPrefab[i] = prefabList[i]; 
+            _prefabToId[prefabList[i]] = i;
         }
     }
     public int PrefabToId(GameObject prefab){

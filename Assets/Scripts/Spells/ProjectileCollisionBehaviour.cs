@@ -6,7 +6,7 @@ using System;
 public abstract class CollisionBehaviour
 {
     public ElementDefinition element;
-    public abstract void PerformCollision(GameObject projectileObject,Projectile projComponent, Collision other, Rigidbody rb);
+    public abstract void PerformCollision(GameObject projectileObject,IProjectile projComponent, Collider other);
 }
 
 
@@ -14,17 +14,14 @@ public class ExplosionCollisionBehaviour:CollisionBehaviour
 {
     const float DELETE_TIME = 4f; 
 
-    public override void PerformCollision(GameObject projectileObject,Projectile projComponent, Collision other, Rigidbody rb){
-
-        projComponent.HideProjectileClientRPC();
+    public override void PerformCollision(GameObject projectileObject,IProjectile projComponent, Collider other){
+        projComponent.HideProjectile();
         
-        projComponent.ExplosionEffectClientRPC(projectileObject.transform.position, Quaternion.identity);
+        projComponent.ExplosionEffect(projectileObject.transform.position, Quaternion.identity);
         
         foreach(Collider col in projectileObject.GetComponents<Collider>()){
             col.enabled = false;
         }
-        rb.collisionDetectionMode = CollisionDetectionMode.Discrete;
-        rb.isKinematic = true; 
-        projComponent.DespawnObject(DELETE_TIME);
+        GameObject.Destroy(projectileObject,DELETE_TIME);
     }
 }

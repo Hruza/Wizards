@@ -1,108 +1,112 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using Unity.Netcode;
 using System.Threading.Tasks;
 
-public class Projectile : NetworkBehaviour 
+[RequireComponent(typeof(SphereCollider))]
+public class Projectile : MonoBehaviour, IProjectile
 {
     const float DESPAWN_TIME = 50f;
-    Rigidbody rb;
     public GameObject explosionEffect;
     public GameObject effect;
     public GameObject model;
-    public float g = 9.81f;
+    [HideInInspector]public float g = 9.81f;
     public CollisionBehaviour collBehaviour;
+
+    public LayerMask layerMask;
     public float scale = 1;
     public float initSpeed = 0;
     float despawnTime;
-    bool initialized;
+    bool active;
+    float detectionRadius;
 
-    // Start is called before the first frame update
-    public override void OnNetworkSpawn()
-    {
-        Debug.Log("Projectile onSpawned called");
-        if(!IsServer) {
-            rb.collisionDetectionMode = CollisionDetectionMode.Discrete;
-            return;
-        }
-    }
+    Vector3 velocity;
 
-    void Awake(){
-        rb = GetComponent<Rigidbody>();
-    }
-    public void Initialize() {
+
+    public void Initialize(ExplosionCollisionBehaviour collBehaviour, float scale, float g, float initSpeed) {
+        this.collBehaviour = collBehaviour;
+        this.scale = scale;
+        this.g = g;
+        this.initSpeed = initSpeed;
+
+        velocity = transform.forward * initSpeed;
+
+        detectionRadius = GetComponent<SphereCollider>().radius;
+        GetComponent<Collider>().enabled = false;
+
         Debug.Log("Projectile enabled");
         despawnTime = Time.time + DESPAWN_TIME;
-        rb.isKinematic = false; 
-        rb.collisionDetectionMode = CollisionDetectionMode.ContinuousDynamic;
-        rb.interpolation = RigidbodyInterpolation.Interpolate;
         GetComponent<Collider>().enabled = true;
-        if(initSpeed>0) rb.linearVelocity = transform.forward * initSpeed;
         if(scale != 1){
             model.transform.localScale *= scale;
             effect.transform.localScale *= scale;
         }
         initSpeed = 0;
+
+        ShowProjectile();
+
+        active = true;
+    }
+
+    private void OnEnable() {
+        NetworkTickClock.instance.processTick += ProcessTick;
+    }
+
+    void OnDisable(){
+        NetworkTickClock.instance.processTick -= ProcessTick;
+        active = false;
+    }
+ 
+    void Update()  
+    {
+        transform.rotation = Quaternion.LookRotation(velocity,Vector3.up);
+        if(Time.time > despawnTime){
+            OnDisable();
+            Destroy(gameObject);
+        }
+    }
+
+    public void ShowProjectile(){
         effect.SetActive(true);
         model.SetActive(true);
         foreach(ParticleSystem particleSystem in effect.GetComponentsInChildren<ParticleSystem>()){
             particleSystem.Play();
         }
-        initialized = true;
     }
 
-    void OnDisable(){
-        rb.collisionDetectionMode = CollisionDetectionMode.Discrete;
-        rb.isKinematic = true; 
-        initialized = false;
-    }
-
-    // Update is called once per frame  
-    void Update()  
-    {
-        if(!IsServer || !initialized) return;
-        if(rb && !rb.isKinematic){
-            transform.rotation = Quaternion.LookRotation(rb.linearVelocity,Vector3.up);
-        }
-        if(Time.time > despawnTime){
-            OnDisable();
-            GetComponent<NetworkObject>().Despawn();
-        }
-    }
-
-    private void FixedUpdate() {
-        if(!IsServer) return;
-        if(rb && !rb.isKinematic){
-            rb.AddForce(Vector3.down * g * rb.mass);
-        }
-    }
-
-    private void OnCollisionEnter(Collision other) {
-        if(!IsServer) return;
-        if(rb != null){
-            collBehaviour.PerformCollision(gameObject,this,other,rb);
-        }
-    }
-
-    [ClientRpc]
-    public void HideProjectileClientRPC(){
+    public void HideProjectile(){
         foreach(ParticleSystem particleSystem in GetComponentsInChildren<ParticleSystem>()){
             particleSystem.Stop();
         }
-        
         model.SetActive(false);
+        active = false;
     }
 
-    [ClientRpc]
-    public void ExplosionEffectClientRPC(Vector3 position,Quaternion rotation){
+    public void StopProjectile(){
+        velocity = Vector3.zero;
+    }
+
+    RaycastHit hit;
+
+    public void ProcessTick() {
+        if(!active) return;
+        Debug.DrawLine( - velocity.normalized*detectionRadius + transform.position,transform.position + (velocity*Time.fixedDeltaTime) + velocity.normalized*detectionRadius,Random.ColorHSV(),1f);
+        if(velocity.sqrMagnitude >0 && Physics.CapsuleCast(transform.position,transform.position + (velocity*Time.fixedDeltaTime),detectionRadius,transform.forward,out hit,velocity.magnitude*Time.fixedDeltaTime,layerMask)){
+            Debug.Log(hit.collider.gameObject);
+            Debug.DrawLine(transform.position,hit.point,Color.red,10f);
+            collBehaviour.PerformCollision(gameObject,this,hit.collider);
+        }
+        else{
+            transform.position += velocity*Time.fixedDeltaTime;
+        }
+        velocity += g*Vector3.down*Time.fixedDeltaTime;
+    }
+
+    public void ExplosionEffect(Vector3 position, Quaternion rotation){
         if(explosionEffect){
             GameObject explosionInstance = Instantiate(explosionEffect,position,rotation);
             Destroy(explosionInstance,5);
         }
     }
 
-    public void DespawnObject(float t){
-        if(Time.time + t < despawnTime) despawnTime = Time.time + t;
-    }
 }

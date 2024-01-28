@@ -1,17 +1,17 @@
 using Unity.Netcode;
 using System;
+using UnityEngine;
 
 public class NetworkTickClock : NetworkBehaviour
 {
-    static NetworkTickClock instance;
-    int currentTick;
+    public static NetworkTickClock instance;
+    public int currentTick{get; private set;}
     int lastProcessedTick;
 
     public Action processTick;
     const int SYNC_PERIOD = 300;
 
-    // Start is called before the first frame update
-    void Start()
+    public override void OnNetworkSpawn()
     {
         if(instance == null){
             instance = this;
@@ -20,13 +20,13 @@ public class NetworkTickClock : NetworkBehaviour
             Destroy(this); 
         }
         currentTick = 0;
-        if(IsClient){
+        if(!IsServer){
             Synchronize();
         }
     }
 
     void Synchronize(){
-        GetServerTickServerRPC(currentTick);
+        GetServerTickServerRPC(OwnerClientId,currentTick,new ServerRpcParams());
     }
 
     private void FixedUpdate() {
@@ -35,8 +35,8 @@ public class NetworkTickClock : NetworkBehaviour
 
         if(lastProcessedTick == -1) return;
         while(lastProcessedTick < currentTick){
-            processTick();
             lastProcessedTick++;
+            processTick?.Invoke();
         }
         if(IsClient && currentTick % SYNC_PERIOD==0){
             Synchronize();
@@ -50,15 +50,23 @@ public class NetworkTickClock : NetworkBehaviour
         }
     }
 
-    [ServerRpc]
-    private void GetServerTickServerRPC(int clientTick){
-        GetServerTickClientRPC(clientTick,currentTick);
+    [ServerRpc(RequireOwnership = false)]
+    private void GetServerTickServerRPC(ulong clientId, int clientTick, ServerRpcParams serverRpcParams = default){
+        ClientRpcParams clientRpcParams = new ClientRpcParams
+        {
+            Send = new ClientRpcSendParams
+            {
+                TargetClientIds = new ulong[]{serverRpcParams.Receive.SenderClientId}
+            }
+        };
+        GetServerTickClientRPC(clientTick,currentTick,clientRpcParams);
     }
 
     [ClientRpc]
-    private void GetServerTickClientRPC(int clientTick,int serverTick){
+    private void GetServerTickClientRPC(int clientTick,int serverTick,ClientRpcParams clientRpcParams = default){
             
         currentTick = serverTick + (currentTick - clientTick)/2;
+        Debug.Log("Synchronisation:\n server " + serverTick.ToString() + "\n client " + clientTick.ToString() + "\n current " + currentTick.ToString());
         if(lastProcessedTick == -1){
             lastProcessedTick = currentTick;
         }
