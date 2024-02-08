@@ -18,9 +18,11 @@ public class AimTarget : MonoBehaviour
         if (Physics.Raycast(cam.position, cam.TransformDirection(Vector3.forward), out hit, Mathf.Infinity, layerMask.value))
         {
             transform.position = hit.point;
+            CrosshairController.SetDistance(hit.distance,1,MAX_DISTANCE);
         }
         else{
             transform.position = cam.position + cam.TransformDirection(Vector3.forward)*MAX_DISTANCE;
+            CrosshairController.SetDistance(MAX_DISTANCE,1,MAX_DISTANCE);
         }
     }
 }

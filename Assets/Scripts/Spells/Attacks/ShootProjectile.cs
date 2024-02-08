@@ -8,7 +8,7 @@ public class ShootProjectile:Attack
     public override void OnStartAttack(Transform target,Transform source)
     {
         Vector3 velocity = GetParabolicVelocity(source.position, target.position, _spellReference.element.standardVelocity, _spellReference.element.baseProjectile.gravity , 50f);
-        CreateProjectile(_spellReference.element.baseProjectile.prefab,source.position,velocity, parameters.scale , _spellReference.element.baseProjectile.gravity );
+        CreateProjectile(_spellReference.element.baseProjectile.prefab,source.position,velocity, parameters.scale , _spellReference.element.baseProjectile.gravity, Mathf.RoundToInt(_spellReference.element.damage * parameters.damage) );
     }
 
 }

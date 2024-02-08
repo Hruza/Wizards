@@ -3,7 +3,8 @@
     "rootNamespace": "",
     "references": [
         "Unity.Netcode.Runtime",
-        "Unity.InputSystem"
+        "Unity.InputSystem",
+        "Entity"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

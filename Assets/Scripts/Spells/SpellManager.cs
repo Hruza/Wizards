@@ -66,26 +66,26 @@ public class SpellManager : NetworkBehaviour
 
     int prefabId=0;
 
-    public void CreateProjectile(GameObject projectile,Vector3 pos, Vector3 velocity,float scale, float g){
+    public void CreateProjectile(GameObject projectile,Vector3 pos, Vector3 velocity,float scale, float g,int damage){
         prefabId = projectileIndexer.PrefabToId(projectile);
-        SpawnProjectileServerRPC(prefabId, NetworkTickClock.instance.currentTick, pos, velocity,scale,g);
-        InstantiateProjectile(prefabId, -1, pos, velocity, scale, g);
+        SpawnProjectileServerRPC(prefabId, NetworkTickClock.instance.currentTick, pos, velocity, scale, g, damage);
+        InstantiateProjectile(prefabId, -1, pos, velocity, scale, g, damage);
     }
 
 
     [ServerRpc]
-    public void SpawnProjectileServerRPC(int prefabId, int tick, Vector3 position, Vector3 velocity,float scale, float g){
-        InsantiateProjectileClientRPC(prefabId, tick, position, velocity, scale, g);   
+    public void SpawnProjectileServerRPC(int prefabId, int tick, Vector3 position, Vector3 velocity,float scale, float g,int damage){
+        InsantiateProjectileClientRPC(prefabId, tick, position, velocity, scale, g, damage);   
     }
 
     [ClientRpc]
-    public void InsantiateProjectileClientRPC(int prefabId, int tick, Vector3 position, Vector3 velocity,float scale, float g){
+    public void InsantiateProjectileClientRPC(int prefabId, int tick, Vector3 position, Vector3 velocity,float scale, float g,int damage){
         if(!IsOwner){
-            InstantiateProjectile(prefabId,tick,position,velocity,scale,g);
+            InstantiateProjectile(prefabId,tick,position,velocity,scale,g, damage);
         }
     }
 
-    public void InstantiateProjectile(int prefabId, int tick, Vector3 position, Vector3 velocity,float scale, float g){
+    public void InstantiateProjectile(int prefabId, int tick, Vector3 position, Vector3 velocity,float scale, float g,int damage){
         Debug.Log("Creating prefab velocity "+velocity.ToString());
         Quaternion rotation = Quaternion.LookRotation(velocity,Vector3.up);
 
@@ -93,7 +93,7 @@ public class SpellManager : NetworkBehaviour
 
         IProjectile projComponent = proj.GetComponent<IProjectile>();
         if(projComponent != null){
-            projComponent.Initialize(new ExplosionCollisionBehaviour(),scale,g,velocity.magnitude);
+            projComponent.Initialize(new ExplosionCollisionBehaviour(),scale,g,velocity.magnitude,damage);
         }
         if(tick >=0){
             NetworkTickClock.instance.RollForward(projComponent,tick);

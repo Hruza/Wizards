@@ -1,0 +1,6 @@
+{
+    "name": "UI",
+    "optionalUnityReferences": [
+        "TestAssemblies"
+    ]
+}

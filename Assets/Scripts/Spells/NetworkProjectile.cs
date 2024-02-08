@@ -5,10 +5,11 @@ using Unity.Netcode;
 using System.Threading.Tasks;
 
 public interface IProjectile: ITickable{
-    public void Initialize(ExplosionCollisionBehaviour collBehaviour, float scale, float g, float initSpeed); 
+    public void Initialize(ExplosionCollisionBehaviour collBehaviour, float scale, float g, float initSpeed, int damage); 
     public void HideProjectile();
     public void StopProjectile();
     public void ExplosionEffect(Vector3 position, Quaternion rotation);
+    public int GetDamage();
 }
 
 public class NetworkProjectile : NetworkBehaviour, IProjectile
@@ -25,6 +26,8 @@ public class NetworkProjectile : NetworkBehaviour, IProjectile
     float despawnTime;
     bool initialized;
 
+    int damage;
+
     // Start is called before the first frame update
     public override void OnNetworkSpawn()
     {
@@ -40,11 +43,12 @@ public class NetworkProjectile : NetworkBehaviour, IProjectile
     void Awake(){
         rb = GetComponent<Rigidbody>();
     }
-    public void Initialize(ExplosionCollisionBehaviour collBehaviour, float scale, float g, float initSpeed) {
+    public void Initialize(ExplosionCollisionBehaviour collBehaviour, float scale, float g, float initSpeed, int damage) {
         this.collBehaviour = collBehaviour;
         this.scale = scale;
         this.g = g;
         this.initSpeed = initSpeed;
+        this.damage = damage;
 
 
         Debug.Log("Projectile enabled");
@@ -138,5 +142,10 @@ public class NetworkProjectile : NetworkBehaviour, IProjectile
 
     public void DespawnObject(float t){
         if(Time.time + t < despawnTime) despawnTime = Time.time + t;
+    }
+
+    public int GetDamage()
+    {
+        return damage;
     }
 }

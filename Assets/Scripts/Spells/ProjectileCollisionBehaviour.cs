@@ -22,6 +22,7 @@ public class ExplosionCollisionBehaviour:CollisionBehaviour
         foreach(Collider col in projectileObject.GetComponents<Collider>()){
             col.enabled = false;
         }
+        other.GetComponent<Entity>()?.ApplyDamage(projComponent.GetDamage());
         GameObject.Destroy(projectileObject,DELETE_TIME);
     }
 }

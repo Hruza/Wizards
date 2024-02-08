@@ -47,8 +47,8 @@ public abstract class Attack:ScriptableObject
         return new Vector3(horizontal.x * x, y, horizontal.y * x);
     }
 
-    protected void CreateProjectile(GameObject projectile,Vector3 pos, Vector3 velocity,float scale, float g){
-        _spellReference.manager.CreateProjectile(projectile,pos,velocity,scale,g);
+    protected void CreateProjectile(GameObject projectile,Vector3 pos, Vector3 velocity,float scale, float g,int damage){
+        _spellReference.manager.CreateProjectile(projectile,pos,velocity,scale,g,damage);
     }
 
 }

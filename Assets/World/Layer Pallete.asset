@@ -12,4 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c509dbaa7b6f416409e3195321a2187e, type: 3}
   m_Name: Layer Pallete
   m_EditorClassIdentifier: 
-  PaletteLayers: []
+  PaletteLayers:
+  - {fileID: 8574412962073106934, guid: af80d9a00dfe1554d9df3b8273b6e8f6, type: 2}
+  - {fileID: 8574412962073106934, guid: 9fe3c2c641c5eff4a9cce42d3afec52b, type: 2}

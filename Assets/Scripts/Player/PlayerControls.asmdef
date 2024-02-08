@@ -2,7 +2,8 @@
     "name": "PlayerControls",
     "rootNamespace": "",
     "references": [
-        "Unity.InputSystem"
+        "Unity.InputSystem",
+        "UI"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

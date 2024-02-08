@@ -19,15 +19,17 @@ public class Projectile : MonoBehaviour, IProjectile
     float despawnTime;
     bool active;
     float detectionRadius;
+    public int damage{get;private set;}
 
     Vector3 velocity;
 
 
-    public void Initialize(ExplosionCollisionBehaviour collBehaviour, float scale, float g, float initSpeed) {
+    public void Initialize(ExplosionCollisionBehaviour collBehaviour, float scale, float g, float initSpeed, int damage) {
         this.collBehaviour = collBehaviour;
         this.scale = scale;
         this.g = g;
         this.initSpeed = initSpeed;
+        this.damage = damage;
 
         velocity = transform.forward * initSpeed;
 
@@ -109,4 +111,8 @@ public class Projectile : MonoBehaviour, IProjectile
         }
     }
 
+    public int GetDamage()
+    {
+        return damage;
+    }
 }

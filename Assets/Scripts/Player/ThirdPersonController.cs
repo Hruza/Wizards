@@ -97,7 +97,7 @@ public class ThirdPersonController : MonoBehaviour
     private int _animIDFreeFall;
     private int _animIDMotionSpeed;
 
-    private Animator _animator;
+    [SerializeField]private Animator animator;
     private CharacterController _controller;
     private InputParser _input;
     [SerializeField]private GameObject playerCamera;
@@ -121,7 +121,12 @@ public class ThirdPersonController : MonoBehaviour
     {
         _cinemachineTargetYaw = CinemachineCameraTarget.transform.rotation.eulerAngles.y;
         
-        _hasAnimator = TryGetComponent(out _animator);
+        if(animator == null){
+            _hasAnimator = TryGetComponent(out animator);
+        }
+        else{
+            _hasAnimator = true;
+        }
         _controller = GetComponent<CharacterController>();
 
         AssignAnimationIDs();
@@ -133,8 +138,9 @@ public class ThirdPersonController : MonoBehaviour
 
     private void Update()
     {
-        _hasAnimator = TryGetComponent(out _animator);
-
+        if(animator == null){
+            _hasAnimator = TryGetComponent(out animator);
+        }
         JumpAndGravity();
         GroundedCheck();
         Move();
@@ -166,7 +172,7 @@ public class ThirdPersonController : MonoBehaviour
         // update animator if using character
         if (_hasAnimator)
         {
-            _animator.SetBool(_animIDGrounded, Grounded);
+            animator.SetBool(_animIDGrounded, Grounded);
         }
     }
 
@@ -236,9 +242,9 @@ public class ThirdPersonController : MonoBehaviour
         // update animator if using character
         if (_hasAnimator)
         {
-            _animator.SetFloat(_animIDSpeedX, _velocity.x);
-            _animator.SetFloat(_animIDSpeedY, _velocity.y);
-            _animator.SetFloat(_animIDMotionSpeed, inputMagnitude);
+            animator.SetFloat(_animIDSpeedX, _velocity.x);
+            animator.SetFloat(_animIDSpeedY, _velocity.y);
+            animator.SetFloat(_animIDMotionSpeed, inputMagnitude);
         }
     }
 
@@ -263,8 +269,8 @@ public class ThirdPersonController : MonoBehaviour
             // update animator if using character
             if (_hasAnimator)
             {
-                _animator.SetBool(_animIDJump, false);
-                _animator.SetBool(_animIDFreeFall, false);
+                animator.SetBool(_animIDJump, false);
+                animator.SetBool(_animIDFreeFall, false);
             }
 
             // stop our velocity dropping infinitely when grounded
@@ -293,7 +299,7 @@ public class ThirdPersonController : MonoBehaviour
                 // update animator if using character
                 if (_hasAnimator)
                 {
-                    _animator.SetBool(_animIDFreeFall, true);
+                    animator.SetBool(_animIDFreeFall, true);
                 }
             }
         }
@@ -313,7 +319,7 @@ public class ThirdPersonController : MonoBehaviour
             // update animator if using character
             if (_hasAnimator)
             {
-                _animator.SetBool(_animIDJump, true);
+                animator.SetBool(_animIDJump, true);
             }
             if(!Grounded){
                 _nExtraJumps--;
@@ -323,7 +329,7 @@ public class ThirdPersonController : MonoBehaviour
         }
         else if (_hasAnimator)
         {
-            _animator.SetBool(_animIDJump, false);
+            animator.SetBool(_animIDJump, false);
         }
 
         if(_nExtraJumps > 0){
